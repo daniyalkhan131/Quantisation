@@ -1,0 +1,496 @@
+[
+  {
+    "model_name": "Qwen2.5-7B",
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "architecture": {
+      "num_layers": 28,
+      "hidden_size": 3584,
+      "num_attention_heads": 28,
+      "num_kv_heads": 4,
+      "head_dim": 128,
+      "model_type": "qwen2",
+      "max_position_embeddings": 32768,
+      "rope_theta": null,
+      "torch_dtype": "torch.bfloat16",
+      "model_memory_gb": 5.451139450073242
+    },
+    "layer_norms": {
+      "median_norm": 16.86,
+      "max_norm": 273.84,
+      "max_norm_layer": 0,
+      "max_to_median_ratio": 16.24,
+      "outlier_layers": [
+        0,
+        27
+      ],
+      "all_norms_first5": [
+        273.84,
+        66.26,
+        31.06,
+        50.83,
+        14.63
+      ],
+      "all_norms_last3": [
+        14.41,
+        13.08,
+        239.91
+      ]
+    },
+    "prefill_logits": {
+      "max_logit_diff": 0.0,
+      "mean_logit_diff": 0.0,
+      "same_top1": true,
+      "top1_token": " a"
+    },
+    "quality": [
+      {
+        "prompt": "Explain quantum computing in simple terms.",
+        "exact_match": false,
+        "diverge_at_char": 119,
+        "total_chars": 555,
+        "token_match_pct": 39.0,
+        "default_output": " Quantum computing is a type of computing that uses the principles of quantum mechanics to perform operations on data. In classical computing, we use bits (1s and 0s) to represent and process informat",
+        "turboquant_output": " Quantum computing is a type of computing that uses the principles of quantum mechanics to perform operations on data. Unlike classical computers, which use bits (1s and 0s) to represent and process i",
+        "both_coherent": true
+      },
+      {
+        "prompt": "Write a Python function to check if a number is prime.",
+        "exact_match": false,
+        "diverge_at_char": 21,
+        "total_chars": 468,
+        "token_match_pct": 3.0,
+        "default_output": " The function should take an integer as input and return True if the number is prime, and False otherwise.\n\nThe function should also handle edge cases such as negative numbers, zero, and one, which ar",
+        "turboquant_output": " The function should be named `is_prime` and take a single argument. It should return `True` if the number is prime, and `False` otherwise.\n\nYour code should pass the following test case:\n```python\nas",
+        "both_coherent": true
+      },
+      {
+        "prompt": "What causes the northern lights?",
+        "exact_match": false,
+        "diverge_at_char": 269,
+        "total_chars": 523,
+        "token_match_pct": 54.0,
+        "default_output": " The northern lights, also known as auroras, are caused by a combination of factors involving the Earth's magnetic field and solar activity. Here's a step-by-step explanation:\n\n1. Solar Wind: The Sun ",
+        "turboquant_output": " The northern lights, also known as auroras, are caused by a combination of factors involving the Earth's magnetic field and solar activity. Here's a step-by-step explanation:\n\n1. Solar Wind: The Sun ",
+        "both_coherent": true
+      }
+    ],
+    "memory": [
+      {
+        "context_length": 1024,
+        "peak_default_gb": 5.76,
+        "peak_turboquant_gb": 5.73,
+        "saved_mb": 37.0,
+        "output_match": true
+      },
+      {
+        "context_length": 4096,
+        "peak_default_gb": 6.27,
+        "peak_turboquant_gb": 6.1,
+        "saved_mb": 176.0,
+        "output_match": false
+      },
+      {
+        "context_length": 8189,
+        "peak_default_gb": 7.08,
+        "peak_turboquant_gb": 6.71,
+        "saved_mb": 380.0,
+        "output_match": true
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "model_name": "Llama-3.1-8B",
+    "model_id": "meta-llama/Llama-3.1-8B-Instruct",
+    "architecture": {
+      "num_layers": 32,
+      "hidden_size": 4096,
+      "num_attention_heads": 32,
+      "num_kv_heads": 8,
+      "head_dim": 128,
+      "model_type": "llama",
+      "max_position_embeddings": 131072,
+      "rope_theta": null,
+      "torch_dtype": "torch.bfloat16",
+      "model_memory_gb": 5.678826332092285
+    },
+    "layer_norms": {
+      "median_norm": 17.9,
+      "max_norm": 21.05,
+      "max_norm_layer": 7,
+      "max_to_median_ratio": 1.18,
+      "outlier_layers": [],
+      "all_norms_first5": [
+        15.87,
+        19.64,
+        19.06,
+        18.66,
+        19.82
+      ],
+      "all_norms_last3": [
+        19.11,
+        16.91,
+        19.35
+      ]
+    },
+    "prefill_logits": {
+      "max_logit_diff": 0.0,
+      "mean_logit_diff": 0.0,
+      "same_top1": true,
+      "top1_token": " a"
+    },
+    "quality": [
+      {
+        "prompt": "Explain quantum computing in simple terms.",
+        "exact_match": false,
+        "diverge_at_char": 438,
+        "total_chars": 494,
+        "token_match_pct": 89.1,
+        "default_output": " Quantum computing is a new way of processing information that uses the principles of quantum mechanics. In classical computing, information is represented as bits, which can have a value of either 0 ",
+        "turboquant_output": " Quantum computing is a new way of processing information that uses the principles of quantum mechanics. In classical computing, information is represented as bits, which can have a value of either 0 ",
+        "both_coherent": true
+      },
+      {
+        "prompt": "Write a Python function to check if a number is prime.",
+        "exact_match": true,
+        "diverge_at_char": 388,
+        "total_chars": 388,
+        "token_match_pct": 100.0,
+        "default_output": " A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.\n\n```python\ndef is_prime(n):\n    \"\"\"\n    Checks if a number is prime.\n\n    Args:\n        n (int",
+        "turboquant_output": " A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.\n\n```python\ndef is_prime(n):\n    \"\"\"\n    Checks if a number is prime.\n\n    Args:\n        n (int",
+        "both_coherent": true
+      },
+      {
+        "prompt": "What causes the northern lights?",
+        "exact_match": true,
+        "diverge_at_char": 527,
+        "total_chars": 527,
+        "token_match_pct": 100.0,
+        "default_output": " The northern lights, also known as the aurora borealis, are a natural phenomenon that occurs when charged particles from the sun interact with the Earth's magnetic field and atmosphere. The charged p",
+        "turboquant_output": " The northern lights, also known as the aurora borealis, are a natural phenomenon that occurs when charged particles from the sun interact with the Earth's magnetic field and atmosphere. The charged p",
+        "both_coherent": true
+      }
+    ],
+    "memory": [
+      {
+        "context_length": 1024,
+        "peak_default_gb": 6.0,
+        "peak_turboquant_gb": 5.91,
+        "saved_mb": 93.0,
+        "output_match": true
+      },
+      {
+        "context_length": 4092,
+        "peak_default_gb": 6.67,
+        "peak_turboquant_gb": 6.27,
+        "saved_mb": 417.0,
+        "output_match": true
+      },
+      {
+        "context_length": 8087,
+        "peak_default_gb": 7.71,
+        "peak_turboquant_gb": 6.84,
+        "saved_mb": 890.0,
+        "output_match": true
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "model_name": "Phi-4-14B",
+    "model_id": "microsoft/phi-4",
+    "architecture": {
+      "num_layers": 40,
+      "hidden_size": 5120,
+      "num_attention_heads": 40,
+      "num_kv_heads": 10,
+      "head_dim": 128,
+      "model_type": "phi3",
+      "max_position_embeddings": 16384,
+      "rope_theta": null,
+      "torch_dtype": "torch.bfloat16",
+      "model_memory_gb": 9.103724479675293
+    },
+    "layer_norms": {
+      "median_norm": 19.21,
+      "max_norm": 26.46,
+      "max_norm_layer": 0,
+      "max_to_median_ratio": 1.38,
+      "outlier_layers": [],
+      "all_norms_first5": [
+        26.46,
+        16.98,
+        15.24,
+        14.91,
+        17.14
+      ],
+      "all_norms_last3": [
+        20.03,
+        19.5,
+        20.44
+      ]
+    },
+    "prefill_logits": {
+      "max_logit_diff": 0.0,
+      "mean_logit_diff": 0.0,
+      "same_top1": true,
+      "top1_token": " a"
+    },
+    "quality": [
+      {
+        "prompt": "Explain quantum computing in simple terms.",
+        "exact_match": true,
+        "diverge_at_char": 0,
+        "total_chars": 0,
+        "token_match_pct": 100,
+        "default_output": "",
+        "turboquant_output": "",
+        "both_coherent": true
+      },
+      {
+        "prompt": "Write a Python function to check if a number is prime.",
+        "exact_match": false,
+        "diverge_at_char": 185,
+        "total_chars": 329,
+        "token_match_pct": 44.0,
+        "default_output": " The function should return `True` if the number is prime and `False` otherwise. A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself. For example, 2",
+        "turboquant_output": " The function should return `True` if the number is prime and `False` otherwise. A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself.\n\n**Function Si",
+        "both_coherent": true
+      },
+      {
+        "prompt": "What causes the northern lights?",
+        "exact_match": true,
+        "diverge_at_char": 464,
+        "total_chars": 464,
+        "token_match_pct": 100.0,
+        "default_output": " \nA) The reflection of sunlight off the moon\nB) The reflection of sunlight off the ocean\nC) The interaction of solar wind with the Earth's magnetic field\nD) The reflection of sunlight off the clouds\n\n",
+        "turboquant_output": " \nA) The reflection of sunlight off the moon\nB) The reflection of sunlight off the ocean\nC) The interaction of solar wind with the Earth's magnetic field\nD) The reflection of sunlight off the clouds\n\n",
+        "both_coherent": true
+      }
+    ],
+    "memory": [
+      {
+        "context_length": 1024,
+        "peak_default_gb": 9.75,
+        "peak_turboquant_gb": 9.61,
+        "saved_mb": 146.0,
+        "output_match": true
+      },
+      {
+        "context_length": 4091,
+        "peak_default_gb": 10.72,
+        "peak_turboquant_gb": 10.09,
+        "saved_mb": 650.0,
+        "output_match": true
+      },
+      {
+        "context_length": 8171,
+        "peak_default_gb": 12.28,
+        "peak_turboquant_gb": 10.92,
+        "saved_mb": 1392.0,
+        "output_match": true
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "model_name": "Gemma-2-9B",
+    "model_id": "google/gemma-2-9b-it",
+    "architecture": {
+      "num_layers": 42,
+      "hidden_size": 3584,
+      "num_attention_heads": 16,
+      "num_kv_heads": 8,
+      "head_dim": 256,
+      "model_type": "gemma2",
+      "max_position_embeddings": 8192,
+      "rope_theta": null,
+      "torch_dtype": "torch.bfloat16",
+      "model_memory_gb": 6.075854778289795
+    },
+    "layer_norms": {
+      "median_norm": 17.82,
+      "max_norm": 21.28,
+      "max_norm_layer": 25,
+      "max_to_median_ratio": 1.19,
+      "outlier_layers": [],
+      "all_norms_first5": [
+        19.23,
+        19.18,
+        19.97,
+        18.17,
+        16.04
+      ],
+      "all_norms_last3": [
+        17.02,
+        16.37,
+        16.52
+      ]
+    },
+    "prefill_logits": {
+      "max_logit_diff": 0.0,
+      "mean_logit_diff": 0.0,
+      "same_top1": true,
+      "top1_token": " a"
+    },
+    "quality": [
+      {
+        "prompt": "Explain quantum computing in simple terms.",
+        "exact_match": true,
+        "diverge_at_char": 429,
+        "total_chars": 429,
+        "token_match_pct": 100.0,
+        "default_output": "\n\nImagine a regular computer bit like a light switch, it can be either on (1) or off (0).\n\nNow imagine a quantum bit, or qubit, like a dimmer switch. It can be on, off, or **anywhere in between**. Thi",
+        "turboquant_output": "\n\nImagine a regular computer bit like a light switch, it can be either on (1) or off (0).\n\nNow imagine a quantum bit, or qubit, like a dimmer switch. It can be on, off, or **anywhere in between**. Thi",
+        "both_coherent": true
+      },
+      {
+        "prompt": "Write a Python function to check if a number is prime.",
+        "exact_match": true,
+        "diverge_at_char": 344,
+        "total_chars": 344,
+        "token_match_pct": 100.0,
+        "default_output": "\n\n```python\ndef is_prime(number):\n  \"\"\"\n  Checks if a number is prime.\n\n  Args:\n    number: The number to check.\n\n  Returns:\n    True if the number is prime, False otherwise.\n  \"\"\"\n  # Prime numbers a",
+        "turboquant_output": "\n\n```python\ndef is_prime(number):\n  \"\"\"\n  Checks if a number is prime.\n\n  Args:\n    number: The number to check.\n\n  Returns:\n    True if the number is prime, False otherwise.\n  \"\"\"\n  # Prime numbers a",
+        "both_coherent": true
+      },
+      {
+        "prompt": "What causes the northern lights?",
+        "exact_match": false,
+        "diverge_at_char": 72,
+        "total_chars": 466,
+        "token_match_pct": 18.8,
+        "default_output": "\n\nThe Northern Lights, also known as the Aurora Borealis, are caused by the interaction of charged particles from the sun with the Earth's atmosphere.\n\nHere's a breakdown:\n\n1. **Solar Wind:** The sun ",
+        "turboquant_output": "\n\nThe Northern Lights, also known as the Aurora Borealis, are caused by a fascinating interaction between the Sun and Earth's atmosphere. \n\nHere's a breakdown:\n\n1. **Solar Wind:** The Sun constantly e",
+        "both_coherent": true
+      }
+    ],
+    "memory": [
+      {
+        "context_length": 1024,
+        "peak_default_gb": 6.62,
+        "peak_turboquant_gb": 6.38,
+        "saved_mb": 244.0,
+        "output_match": true
+      },
+      {
+        "context_length": 4079,
+        "peak_default_gb": 7.96,
+        "peak_turboquant_gb": 6.89,
+        "saved_mb": 1096.0,
+        "output_match": false
+      },
+      {
+        "context_length": 8063,
+        "peak_default_gb": 9.98,
+        "peak_turboquant_gb": 7.71,
+        "saved_mb": 2323.0,
+        "output_match": true
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "model_name": "Qwen2.5-32B",
+    "model_id": "Qwen/Qwen2.5-32B-Instruct",
+    "architecture": {
+      "num_layers": 64,
+      "hidden_size": 5120,
+      "num_attention_heads": 40,
+      "num_kv_heads": 8,
+      "head_dim": 128,
+      "model_type": "qwen2",
+      "max_position_embeddings": 32768,
+      "rope_theta": null,
+      "torch_dtype": "torch.bfloat16",
+      "model_memory_gb": 19.312846183776855
+    },
+    "layer_norms": {
+      "median_norm": 16.09,
+      "max_norm": 37.82,
+      "max_norm_layer": 0,
+      "max_to_median_ratio": 2.35,
+      "outlier_layers": [],
+      "all_norms_first5": [
+        37.82,
+        22.5,
+        32.48,
+        25.85,
+        25.18
+      ],
+      "all_norms_last3": [
+        14.65,
+        15.84,
+        19.42
+      ]
+    },
+    "prefill_logits": {
+      "max_logit_diff": 0.0,
+      "mean_logit_diff": 0.0,
+      "same_top1": true,
+      "top1_token": " a"
+    },
+    "quality": [
+      {
+        "prompt": "Explain quantum computing in simple terms.",
+        "exact_match": false,
+        "diverge_at_char": 359,
+        "total_chars": 514,
+        "token_match_pct": 71.0,
+        "default_output": " Quantum computing is a type of computing that uses the principles of quantum mechanics to perform operations on data. In classical computing, we use bits (0s and 1s) to represent information, but in ",
+        "turboquant_output": " Quantum computing is a type of computing that uses the principles of quantum mechanics to perform operations on data. In classical computing, we use bits (0s and 1s) to represent information, but in ",
+        "both_coherent": true
+      },
+      {
+        "prompt": "Write a Python function to check if a number is prime.",
+        "exact_match": false,
+        "diverge_at_char": 142,
+        "total_chars": 455,
+        "token_match_pct": 25.0,
+        "default_output": " The function should take an integer as input and return a boolean value indicating whether the number is prime or not. The function should handle edge cases such as negative numbers, zero, and one by",
+        "turboquant_output": " The function should take an integer as input and return a boolean value indicating whether the number is prime or not. The function should have a time complexity of O(sqrt(n)).\n\nIn addition, the func",
+        "both_coherent": true
+      },
+      {
+        "prompt": "What causes the northern lights?",
+        "exact_match": false,
+        "diverge_at_char": 116,
+        "total_chars": 509,
+        "token_match_pct": 53.0,
+        "default_output": " The Northern Lights, also known as Aurora Borealis, are caused by charged particles from the sun colliding with gases in the Earth's atmosphere. When the sun releases a burst of energy called a solar",
+        "turboquant_output": " The Northern Lights, also known as Aurora Borealis, are caused by charged particles from the sun colliding with gas particles in Earth's atmosphere. When the sun releases a burst of energy called a s",
+        "both_coherent": true
+      }
+    ],
+    "memory": [
+      {
+        "context_length": 1024,
+        "peak_default_gb": 19.97,
+        "peak_turboquant_gb": 19.79,
+        "saved_mb": 186.0,
+        "output_match": true
+      },
+      {
+        "context_length": 4096,
+        "peak_default_gb": 21.23,
+        "peak_turboquant_gb": 20.42,
+        "saved_mb": 833.0,
+        "output_match": true
+      },
+      {
+        "context_length": 8189,
+        "peak_default_gb": 23.16,
+        "peak_turboquant_gb": 21.41,
+        "saved_mb": 1791.0,
+        "output_match": true
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "model_name": "Llama-3.3-70B",
+    "model_id": "meta-llama/Llama-3.3-70B-Instruct",
+    "status": "error",
+    "error": "[Errno 28] No space left on device"
+  }
+]

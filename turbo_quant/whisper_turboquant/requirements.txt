@@ -21,3 +21,7 @@ scipy
 # arbitrary audio formats (mp3/flac/etc.) instead of via run_one_config.py's
 # soundfile-based loader.
 # brew install ffmpeg
+
+# Needed only for run_faster_whisper_config.py / evaluate.py --include-faster-whisper
+# (the faster-whisper / CTranslate2 comparison baseline).
+faster-whisper

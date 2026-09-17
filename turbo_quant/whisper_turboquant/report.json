@@ -9,62 +9,108 @@
   ],
   "kv_bits_tested": 3.5,
   "decode_settings": {
-    "max_new_tokens": 224,
-    "decoding": "greedy, single 30s chunk"
+    "mlx_configs": {
+      "max_new_tokens": 224,
+      "decoding": "greedy, single 30s chunk"
+    },
+    "faster_whisper_configs": {
+      "beam_size": 1,
+      "temperature": 0.0
+    }
   },
   "summary": {
     "fp16_baseline": {
-      "weights_size_mb": 2940.45,
-      "model_load_time_s": 0.4779,
+      "backend": "mlx (GPU/Metal)",
+      "checkpoint_size_mb": 2940.45,
+      "model_load_time_s": 0.4598,
       "model_load_peak_device_memory_mb": 2940.33,
-      "process_peak_rss_mb": 3423.27,
-      "avg_real_time_factor": 7.6725,
-      "avg_tokens_per_second": 31.705,
+      "process_peak_rss_mb": 3423.67,
+      "avg_real_time_factor": 8.2845,
+      "avg_tokens_per_second": 34.235,
       "avg_inference_peak_device_memory_mb": 4201.85,
       "avg_self_attn_kv_cache_allocated_bytes": 41943040.0,
       "avg_word_error_rate_vs_fp16_baseline": 0.0
     },
     "weight_4bit_only": {
-      "weights_size_mb": 837.04,
-      "model_load_time_s": 0.1756,
+      "backend": "mlx (GPU/Metal)",
+      "checkpoint_size_mb": 837.04,
+      "model_load_time_s": 0.172,
       "model_load_peak_device_memory_mb": 849.33,
-      "process_peak_rss_mb": 1344.11,
-      "avg_real_time_factor": 13.656,
-      "avg_tokens_per_second": 56.14,
+      "process_peak_rss_mb": 1344.39,
+      "avg_real_time_factor": 14.8735,
+      "avg_tokens_per_second": 61.005,
       "avg_inference_peak_device_memory_mb": 2118.63,
       "avg_self_attn_kv_cache_allocated_bytes": 41943040.0,
       "avg_word_error_rate_vs_fp16_baseline": 0.1123,
-      "weights_size_reduction_pct": 71.53,
+      "checkpoint_size_reduction_pct_vs_mlx_fp16": 71.53,
       "kv_cache_reduction_pct": 0.0,
-      "load_peak_memory_change_pct": -71.11
+      "load_peak_memory_change_pct": -71.11,
+      "process_rss_change_pct_vs_mlx_fp16": -60.73,
+      "speed_change_pct_vs_mlx_fp16": 79.53
     },
     "turboquant_kv_only": {
-      "weights_size_mb": 2940.45,
-      "model_load_time_s": 0.461,
+      "backend": "mlx (GPU/Metal)",
+      "checkpoint_size_mb": 2940.45,
+      "model_load_time_s": 0.2007,
       "model_load_peak_device_memory_mb": 2940.33,
-      "process_peak_rss_mb": 3140.92,
-      "avg_real_time_factor": 7.463,
-      "avg_tokens_per_second": 30.74,
+      "process_peak_rss_mb": 3430.38,
+      "avg_real_time_factor": 8.7835,
+      "avg_tokens_per_second": 36.295,
       "avg_inference_peak_device_memory_mb": 4201.91,
       "avg_self_attn_kv_cache_allocated_bytes": 3456000.0,
       "avg_word_error_rate_vs_fp16_baseline": 0.0059,
-      "weights_size_reduction_pct": 0.0,
+      "checkpoint_size_reduction_pct_vs_mlx_fp16": 0.0,
       "kv_cache_reduction_pct": 91.76,
-      "load_peak_memory_change_pct": 0.0
+      "load_peak_memory_change_pct": 0.0,
+      "process_rss_change_pct_vs_mlx_fp16": 0.2,
+      "speed_change_pct_vs_mlx_fp16": 6.02
     },
     "weight_4bit_plus_turboquant_kv": {
-      "weights_size_mb": 837.04,
-      "model_load_time_s": 0.1788,
+      "backend": "mlx (GPU/Metal)",
+      "checkpoint_size_mb": 837.04,
+      "model_load_time_s": 0.1754,
       "model_load_peak_device_memory_mb": 849.33,
-      "process_peak_rss_mb": 1345.97,
-      "avg_real_time_factor": 11.879,
-      "avg_tokens_per_second": 49.4,
+      "process_peak_rss_mb": 1345.89,
+      "avg_real_time_factor": 13.12,
+      "avg_tokens_per_second": 54.615,
       "avg_inference_peak_device_memory_mb": 2118.68,
       "avg_self_attn_kv_cache_allocated_bytes": 3475200.0,
       "avg_word_error_rate_vs_fp16_baseline": 0.1123,
-      "weights_size_reduction_pct": 71.53,
+      "checkpoint_size_reduction_pct_vs_mlx_fp16": 71.53,
       "kv_cache_reduction_pct": 91.71,
-      "load_peak_memory_change_pct": -71.11
+      "load_peak_memory_change_pct": -71.11,
+      "process_rss_change_pct_vs_mlx_fp16": -60.69,
+      "speed_change_pct_vs_mlx_fp16": 58.37
+    },
+    "faster_whisper_float32": {
+      "backend": "faster-whisper (CTranslate2, CPU)",
+      "checkpoint_size_mb": 2947.65,
+      "model_load_time_s": 2.4977,
+      "model_load_peak_device_memory_mb": null,
+      "process_peak_rss_mb": 7175.22,
+      "avg_real_time_factor": 2.4845,
+      "avg_tokens_per_second": 9.98,
+      "avg_inference_peak_device_memory_mb": null,
+      "avg_self_attn_kv_cache_allocated_bytes": null,
+      "avg_word_error_rate_vs_fp16_baseline": 0.0,
+      "checkpoint_size_reduction_pct_vs_mlx_fp16": -0.24,
+      "process_rss_change_pct_vs_mlx_fp16": 109.58,
+      "speed_change_pct_vs_mlx_fp16": -70.01
+    },
+    "faster_whisper_int8": {
+      "backend": "faster-whisper (CTranslate2, CPU)",
+      "checkpoint_size_mb": 2947.65,
+      "model_load_time_s": 1.8385,
+      "model_load_peak_device_memory_mb": null,
+      "process_peak_rss_mb": 3460.53,
+      "avg_real_time_factor": 2.6275,
+      "avg_tokens_per_second": 10.69,
+      "avg_inference_peak_device_memory_mb": null,
+      "avg_self_attn_kv_cache_allocated_bytes": null,
+      "avg_word_error_rate_vs_fp16_baseline": 0.0934,
+      "checkpoint_size_reduction_pct_vs_mlx_fp16": -0.24,
+      "process_rss_change_pct_vs_mlx_fp16": 1.08,
+      "speed_change_pct_vs_mlx_fp16": -68.28
     }
   },
   "configs": {
@@ -74,18 +120,18 @@
       "kv_bits": null,
       "kv_quant_scheme": null,
       "weights_size_mb": 2940.45,
-      "model_load_time_s": 0.4779,
+      "model_load_time_s": 0.4598,
       "model_load_peak_device_memory_mb": 2940.33,
-      "process_peak_rss_mb": 3423.27,
+      "process_peak_rss_mb": 3423.67,
       "per_file": [
         {
           "audio_file": "en_0000_0078.wav",
           "audio_duration_s": 25.6,
           "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
           "decoded_tokens": 114,
-          "inference_time_s": 3.7311,
-          "real_time_factor": 6.861,
-          "tokens_per_second": 30.55,
+          "inference_time_s": 3.451,
+          "real_time_factor": 7.418,
+          "tokens_per_second": 33.03,
           "inference_peak_device_memory_mb": 4201.85,
           "self_attn_kv_cache_allocated_bytes": 41943040,
           "word_error_rate_vs_fp16_baseline": 0.0
@@ -95,14 +141,15 @@
           "audio_duration_s": 17.3,
           "transcript": " I will have rice, I will come and I have one at one time. So the rice only getting problem. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, thang thang will be chapathi or whatever it is.",
           "decoded_tokens": 67,
-          "inference_time_s": 2.0391,
-          "real_time_factor": 8.484,
-          "tokens_per_second": 32.86,
+          "inference_time_s": 1.8905,
+          "real_time_factor": 9.151,
+          "tokens_per_second": 35.44,
           "inference_peak_device_memory_mb": 4201.85,
           "self_attn_kv_cache_allocated_bytes": 41943040,
           "word_error_rate_vs_fp16_baseline": 0.0
         }
-      ]
+      ],
+      "backend": "mlx (GPU/Metal)"
     },
     "weight_4bit_only": {
       "config_name": "weight_4bit_only",
@@ -110,18 +157,18 @@
       "kv_bits": null,
       "kv_quant_scheme": null,
       "weights_size_mb": 837.04,
-      "model_load_time_s": 0.1756,
+      "model_load_time_s": 0.172,
       "model_load_peak_device_memory_mb": 849.33,
-      "process_peak_rss_mb": 1344.11,
+      "process_peak_rss_mb": 1344.39,
       "per_file": [
         {
           "audio_file": "en_0000_0078.wav",
           "audio_duration_s": 25.6,
           "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
           "decoded_tokens": 114,
-          "inference_time_s": 1.8438,
-          "real_time_factor": 13.884,
-          "tokens_per_second": 61.83,
+          "inference_time_s": 1.7403,
+          "real_time_factor": 14.71,
+          "tokens_per_second": 65.51,
           "inference_peak_device_memory_mb": 2118.63,
           "self_attn_kv_cache_allocated_bytes": 41943040,
           "word_error_rate_vs_fp16_baseline": 0.0
@@ -131,14 +178,15 @@
           "audio_duration_s": 17.3,
           "transcript": " I will have rice, I will come and I have one at one time. The rice only getting broken. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, time will pitch up after whatever it is I will go.",
           "decoded_tokens": 65,
-          "inference_time_s": 1.2883,
-          "real_time_factor": 13.428,
-          "tokens_per_second": 50.45,
+          "inference_time_s": 1.1505,
+          "real_time_factor": 15.037,
+          "tokens_per_second": 56.5,
           "inference_peak_device_memory_mb": 2118.63,
           "self_attn_kv_cache_allocated_bytes": 41943040,
           "word_error_rate_vs_fp16_baseline": 0.2245
         }
-      ]
+      ],
+      "backend": "mlx (GPU/Metal)"
     },
     "turboquant_kv_only": {
       "config_name": "turboquant_kv_only",
@@ -146,18 +194,18 @@
       "kv_bits": 3.5,
       "kv_quant_scheme": "turboquant",
       "weights_size_mb": 2940.45,
-      "model_load_time_s": 0.461,
+      "model_load_time_s": 0.2007,
       "model_load_peak_device_memory_mb": 2940.33,
-      "process_peak_rss_mb": 3140.92,
+      "process_peak_rss_mb": 3430.38,
       "per_file": [
         {
           "audio_file": "en_0000_0078.wav",
           "audio_duration_s": 25.6,
           "transcript": " It will have the access straight from there. So there will be no access entering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
           "decoded_tokens": 113,
-          "inference_time_s": 3.7676,
-          "real_time_factor": 6.795,
-          "tokens_per_second": 29.99,
+          "inference_time_s": 3.0478,
+          "real_time_factor": 8.399,
+          "tokens_per_second": 37.08,
           "inference_peak_device_memory_mb": 4201.91,
           "self_attn_kv_cache_allocated_bytes": 4339200,
           "word_error_rate_vs_fp16_baseline": 0.0118
@@ -167,14 +215,15 @@
           "audio_duration_s": 17.3,
           "transcript": " I will have rice, I will come and I have one at one time. So the rice only getting problem. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, thang thang will be chapathi or whatever it is.",
           "decoded_tokens": 67,
-          "inference_time_s": 2.1277,
-          "real_time_factor": 8.131,
-          "tokens_per_second": 31.49,
+          "inference_time_s": 1.887,
+          "real_time_factor": 9.168,
+          "tokens_per_second": 35.51,
           "inference_peak_device_memory_mb": 4201.91,
           "self_attn_kv_cache_allocated_bytes": 2572800,
           "word_error_rate_vs_fp16_baseline": 0.0
         }
-      ]
+      ],
+      "backend": "mlx (GPU/Metal)"
     },
     "weight_4bit_plus_turboquant_kv": {
       "config_name": "weight_4bit_plus_turboquant_kv",
@@ -182,18 +231,18 @@
       "kv_bits": 3.5,
       "kv_quant_scheme": "turboquant",
       "weights_size_mb": 837.04,
-      "model_load_time_s": 0.1788,
+      "model_load_time_s": 0.1754,
       "model_load_peak_device_memory_mb": 849.33,
-      "process_peak_rss_mb": 1345.97,
+      "process_peak_rss_mb": 1345.89,
       "per_file": [
         {
           "audio_file": "en_0000_0078.wav",
           "audio_duration_s": 25.6,
           "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
           "decoded_tokens": 114,
-          "inference_time_s": 2.1877,
-          "real_time_factor": 11.702,
-          "tokens_per_second": 52.11,
+          "inference_time_s": 1.953,
+          "real_time_factor": 13.108,
+          "tokens_per_second": 58.37,
           "inference_peak_device_memory_mb": 2118.68,
           "self_attn_kv_cache_allocated_bytes": 4377600,
           "word_error_rate_vs_fp16_baseline": 0.0
@@ -203,12 +252,77 @@
           "audio_duration_s": 17.3,
           "transcript": " I will have rice, I will come and I have one at one time. The rice only getting broken. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, time, time will pitch up after whatever it is I will go.",
           "decoded_tokens": 67,
-          "inference_time_s": 1.435,
-          "real_time_factor": 12.056,
-          "tokens_per_second": 46.69,
+          "inference_time_s": 1.3173,
+          "real_time_factor": 13.132,
+          "tokens_per_second": 50.86,
           "inference_peak_device_memory_mb": 2118.68,
           "self_attn_kv_cache_allocated_bytes": 2572800,
           "word_error_rate_vs_fp16_baseline": 0.2245
+        }
+      ],
+      "backend": "mlx (GPU/Metal)"
+    },
+    "faster_whisper_float32": {
+      "config_name": "faster_whisper_float32",
+      "backend": "faster-whisper (CTranslate2, CPU)",
+      "model_size": "large-v3",
+      "compute_type": "float32",
+      "beam_size": 1,
+      "checkpoint_size_mb": 2947.65,
+      "model_load_time_s": 2.4977,
+      "process_peak_rss_mb": 7175.22,
+      "per_file": [
+        {
+          "audio_file": "en_0000_0078.wav",
+          "audio_duration_s": 25.6,
+          "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
+          "decoded_tokens": 110,
+          "inference_time_s": 9.0015,
+          "real_time_factor": 2.844,
+          "tokens_per_second": 12.22,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        },
+        {
+          "audio_file": "en_0001_0055.wav",
+          "audio_duration_s": 17.3,
+          "transcript": " I will have rice, I will come and I have one at one time. So the rice only getting problem. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, thang thang will be chapathi or whatever it is.",
+          "decoded_tokens": 63,
+          "inference_time_s": 8.143,
+          "real_time_factor": 2.125,
+          "tokens_per_second": 7.74,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        }
+      ]
+    },
+    "faster_whisper_int8": {
+      "config_name": "faster_whisper_int8",
+      "backend": "faster-whisper (CTranslate2, CPU)",
+      "model_size": "large-v3",
+      "compute_type": "int8",
+      "beam_size": 1,
+      "checkpoint_size_mb": 2947.65,
+      "model_load_time_s": 1.8385,
+      "process_peak_rss_mb": 3460.53,
+      "per_file": [
+        {
+          "audio_file": "en_0000_0078.wav",
+          "audio_duration_s": 25.6,
+          "transcript": " It will have the access straight from there. So there will be no access entering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you have any 3D video? I have.",
+          "decoded_tokens": 107,
+          "inference_time_s": 8.7684,
+          "real_time_factor": 2.92,
+          "tokens_per_second": 12.2,
+          "word_error_rate_vs_fp16_baseline": 0.0235
+        },
+        {
+          "audio_file": "en_0001_0055.wav",
+          "audio_duration_s": 17.3,
+          "transcript": " I will have rice, I will come and I have one at one time. So the rice only getting from... Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon or no, preparation time, no time only, thang thang will be chapathi or whatever it is, I will go.",
+          "decoded_tokens": 68,
+          "inference_time_s": 7.4087,
+          "real_time_factor": 2.335,
+          "tokens_per_second": 9.18,
+          "word_error_rate_vs_fp16_baseline": 0.1633
         }
       ]
     }

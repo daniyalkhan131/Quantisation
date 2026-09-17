@@ -1,0 +1,83 @@
+vivekvar/turboquant: why it slows down on long contexts
+=========================================================
+
+dequant_keys = self._dequantize(self._quantized_keys)   # the WHOLE compressed blob, every step
+keys_to_return = torch.cat([dequant_keys, self.keys, key_states], dim=-2)
+
+There's no incremental/cached dequantization. So per-step cost grows with
+total sequence length, meaning total generation cost grows faster than
+linearly as the sequence gets longer — on top of attention's own cost. At
+~4600 tokens that overhead is real and substantial; at the short prompt's
+~300 tokens it's negligible.
+
+This is exactly the structural gap mlx-vlm's TurboQuant avoids: its fused
+Metal kernels compute attention directly on the packed representation
+without ever materializing a full dequantized tensor.
+
+This isn't an MPS-specific problem — it would show up on CUDA too at long
+enough context, just later, since CUDA has more raw throughput to absorb
+it before it dominates.
+
+Simple analogy
+---------------
+It's like re-reading and rewriting your entire notebook from page 1 every
+time someone adds a new sentence to a conversation, instead of just adding
+the new sentence and leaving the old pages alone. Fine for a short
+notebook, ruinous for a long one.
+
+
+Why decompress at all? What problem is it solving?
+====================================================
+
+Two separate questions get tangled together here:
+
+1. Why does it need to decompress at all -- why can't attention just work
+   on the compressed bits directly?
+
+   What's stored isn't really "a compressed vector" -- it's a small integer
+   (say, 4 bits = a number 0-15) that says "this vector's shape is closest
+   to entry #7 in a fixed lookup table of 16 possible directions." That's
+   it. It's a pointer, not a number you can do math with.
+
+   Attention math (Q . K, then softmax, then weighted sum of V) needs real
+   floating-point numbers to multiply and add. You cannot dot-product a
+   query against the integer 7 -- 7 isn't a vector, it's an index. Before
+   attention can run, something has to say "index 7 means
+   [0.12, -0.05, 0.88, ...]" and substitute the real numbers back in. That
+   substitution step IS dequantization. It's not optional busywork -- it's
+   the unavoidable translation from "compact code" back to "thing you can
+   actually compute with."
+
+   So the decompression itself isn't the design flaw. Some translation step
+   has to happen somewhere. The flaw is how, and how often, this library
+   does it.
+
+2. Why redo it for the ENTIRE history, every single step, instead of
+   smarter alternatives?
+
+   This is the actual bug. There are two better ways to solve problem #1
+   that this library doesn't use:
+
+   - Cache the translation. Once you've decompressed token #50, you don't
+     need to decompress it again for token #51 -- nothing about token #50
+     changed. This library throws that away and redoes it from scratch
+     every time.
+
+   - Skip the translation entirely, cleverly. Since there are only 16
+     possible lookup-table entries, you can precompute "how much does my
+     CURRENT query agree with each of the 16 possible directions" once --
+     16 numbers -- and then for every stored token, just pick the right one
+     of those 16 precomputed numbers off a shelf instead of reconstructing
+     a full vector and redoing the multiplication. This is the classic
+     trick behind fast vector search (FAISS and friends), and it's what
+     mlx-vlm's Metal kernels do -- they compute attention scores directly
+     from the packed index using a small precomputed table, never
+     materializing the full-size decompressed array at all.
+
+   So the real answer to "what is decompressing solving": it's solving the
+   fact that ordinary attention code only knows how to read real numbers,
+   not compressed codes. That problem is real and has to be solved somehow.
+   This particular library solves it the laziest possible way -- brute-force
+   expand everything, every time -- instead of caching the expansion or
+   using the lookup-table shortcut, which is why it gets slower as the
+   conversation gets longer instead of staying cheap.

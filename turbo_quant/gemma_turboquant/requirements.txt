@@ -1,0 +1,12 @@
+# Core
+torch>=2.0
+transformers>=5.14.0
+scipy
+huggingface_hub
+
+# vivekvar/turboquant, installed from the actual source that matches the
+# TurboQuantCache(model.config, nbits=..., skip_layers=...) API -- NOT
+# `pip install turboquant` (PyPI has a different, incompatible v0.2.0 API
+# under the same name; see README.md's "Read this first" section).
+# git clone https://huggingface.co/vivekvar/turboquant turboquant_src
+# pip install -e ./turboquant_src
