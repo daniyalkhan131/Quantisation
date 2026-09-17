@@ -1,0 +1,216 @@
+{
+  "device": "macOS-26.5.1-arm64-arm-64bit-Mach-O",
+  "mlx_version": "0.32.2",
+  "model": "openai/whisper-large-v3",
+  "data_dir": "/Users/daniyal/Documents/projects/Quantisation/turbo_quant/data",
+  "audio_files": [
+    "en_0000_0078.wav",
+    "en_0001_0055.wav"
+  ],
+  "kv_bits_tested": 3.5,
+  "decode_settings": {
+    "max_new_tokens": 224,
+    "decoding": "greedy, single 30s chunk"
+  },
+  "summary": {
+    "fp16_baseline": {
+      "weights_size_mb": 2940.45,
+      "model_load_time_s": 0.4779,
+      "model_load_peak_device_memory_mb": 2940.33,
+      "process_peak_rss_mb": 3423.27,
+      "avg_real_time_factor": 7.6725,
+      "avg_tokens_per_second": 31.705,
+      "avg_inference_peak_device_memory_mb": 4201.85,
+      "avg_self_attn_kv_cache_allocated_bytes": 41943040.0,
+      "avg_word_error_rate_vs_fp16_baseline": 0.0
+    },
+    "weight_4bit_only": {
+      "weights_size_mb": 837.04,
+      "model_load_time_s": 0.1756,
+      "model_load_peak_device_memory_mb": 849.33,
+      "process_peak_rss_mb": 1344.11,
+      "avg_real_time_factor": 13.656,
+      "avg_tokens_per_second": 56.14,
+      "avg_inference_peak_device_memory_mb": 2118.63,
+      "avg_self_attn_kv_cache_allocated_bytes": 41943040.0,
+      "avg_word_error_rate_vs_fp16_baseline": 0.1123,
+      "weights_size_reduction_pct": 71.53,
+      "kv_cache_reduction_pct": 0.0,
+      "load_peak_memory_change_pct": -71.11
+    },
+    "turboquant_kv_only": {
+      "weights_size_mb": 2940.45,
+      "model_load_time_s": 0.461,
+      "model_load_peak_device_memory_mb": 2940.33,
+      "process_peak_rss_mb": 3140.92,
+      "avg_real_time_factor": 7.463,
+      "avg_tokens_per_second": 30.74,
+      "avg_inference_peak_device_memory_mb": 4201.91,
+      "avg_self_attn_kv_cache_allocated_bytes": 3456000.0,
+      "avg_word_error_rate_vs_fp16_baseline": 0.0059,
+      "weights_size_reduction_pct": 0.0,
+      "kv_cache_reduction_pct": 91.76,
+      "load_peak_memory_change_pct": 0.0
+    },
+    "weight_4bit_plus_turboquant_kv": {
+      "weights_size_mb": 837.04,
+      "model_load_time_s": 0.1788,
+      "model_load_peak_device_memory_mb": 849.33,
+      "process_peak_rss_mb": 1345.97,
+      "avg_real_time_factor": 11.879,
+      "avg_tokens_per_second": 49.4,
+      "avg_inference_peak_device_memory_mb": 2118.68,
+      "avg_self_attn_kv_cache_allocated_bytes": 3475200.0,
+      "avg_word_error_rate_vs_fp16_baseline": 0.1123,
+      "weights_size_reduction_pct": 71.53,
+      "kv_cache_reduction_pct": 91.71,
+      "load_peak_memory_change_pct": -71.11
+    }
+  },
+  "configs": {
+    "fp16_baseline": {
+      "config_name": "fp16_baseline",
+      "mlx_path": "../mlx-models/whisper-large-v3-fp16",
+      "kv_bits": null,
+      "kv_quant_scheme": null,
+      "weights_size_mb": 2940.45,
+      "model_load_time_s": 0.4779,
+      "model_load_peak_device_memory_mb": 2940.33,
+      "process_peak_rss_mb": 3423.27,
+      "per_file": [
+        {
+          "audio_file": "en_0000_0078.wav",
+          "audio_duration_s": 25.6,
+          "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
+          "decoded_tokens": 114,
+          "inference_time_s": 3.7311,
+          "real_time_factor": 6.861,
+          "tokens_per_second": 30.55,
+          "inference_peak_device_memory_mb": 4201.85,
+          "self_attn_kv_cache_allocated_bytes": 41943040,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        },
+        {
+          "audio_file": "en_0001_0055.wav",
+          "audio_duration_s": 17.3,
+          "transcript": " I will have rice, I will come and I have one at one time. So the rice only getting problem. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, thang thang will be chapathi or whatever it is.",
+          "decoded_tokens": 67,
+          "inference_time_s": 2.0391,
+          "real_time_factor": 8.484,
+          "tokens_per_second": 32.86,
+          "inference_peak_device_memory_mb": 4201.85,
+          "self_attn_kv_cache_allocated_bytes": 41943040,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        }
+      ]
+    },
+    "weight_4bit_only": {
+      "config_name": "weight_4bit_only",
+      "mlx_path": "../mlx-models/whisper-large-v3-4bit",
+      "kv_bits": null,
+      "kv_quant_scheme": null,
+      "weights_size_mb": 837.04,
+      "model_load_time_s": 0.1756,
+      "model_load_peak_device_memory_mb": 849.33,
+      "process_peak_rss_mb": 1344.11,
+      "per_file": [
+        {
+          "audio_file": "en_0000_0078.wav",
+          "audio_duration_s": 25.6,
+          "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
+          "decoded_tokens": 114,
+          "inference_time_s": 1.8438,
+          "real_time_factor": 13.884,
+          "tokens_per_second": 61.83,
+          "inference_peak_device_memory_mb": 2118.63,
+          "self_attn_kv_cache_allocated_bytes": 41943040,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        },
+        {
+          "audio_file": "en_0001_0055.wav",
+          "audio_duration_s": 17.3,
+          "transcript": " I will have rice, I will come and I have one at one time. The rice only getting broken. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, time will pitch up after whatever it is I will go.",
+          "decoded_tokens": 65,
+          "inference_time_s": 1.2883,
+          "real_time_factor": 13.428,
+          "tokens_per_second": 50.45,
+          "inference_peak_device_memory_mb": 2118.63,
+          "self_attn_kv_cache_allocated_bytes": 41943040,
+          "word_error_rate_vs_fp16_baseline": 0.2245
+        }
+      ]
+    },
+    "turboquant_kv_only": {
+      "config_name": "turboquant_kv_only",
+      "mlx_path": "../mlx-models/whisper-large-v3-fp16",
+      "kv_bits": 3.5,
+      "kv_quant_scheme": "turboquant",
+      "weights_size_mb": 2940.45,
+      "model_load_time_s": 0.461,
+      "model_load_peak_device_memory_mb": 2940.33,
+      "process_peak_rss_mb": 3140.92,
+      "per_file": [
+        {
+          "audio_file": "en_0000_0078.wav",
+          "audio_duration_s": 25.6,
+          "transcript": " It will have the access straight from there. So there will be no access entering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
+          "decoded_tokens": 113,
+          "inference_time_s": 3.7676,
+          "real_time_factor": 6.795,
+          "tokens_per_second": 29.99,
+          "inference_peak_device_memory_mb": 4201.91,
+          "self_attn_kv_cache_allocated_bytes": 4339200,
+          "word_error_rate_vs_fp16_baseline": 0.0118
+        },
+        {
+          "audio_file": "en_0001_0055.wav",
+          "audio_duration_s": 17.3,
+          "transcript": " I will have rice, I will come and I have one at one time. So the rice only getting problem. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, thang thang will be chapathi or whatever it is.",
+          "decoded_tokens": 67,
+          "inference_time_s": 2.1277,
+          "real_time_factor": 8.131,
+          "tokens_per_second": 31.49,
+          "inference_peak_device_memory_mb": 4201.91,
+          "self_attn_kv_cache_allocated_bytes": 2572800,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        }
+      ]
+    },
+    "weight_4bit_plus_turboquant_kv": {
+      "config_name": "weight_4bit_plus_turboquant_kv",
+      "mlx_path": "../mlx-models/whisper-large-v3-4bit",
+      "kv_bits": 3.5,
+      "kv_quant_scheme": "turboquant",
+      "weights_size_mb": 837.04,
+      "model_load_time_s": 0.1788,
+      "model_load_peak_device_memory_mb": 849.33,
+      "process_peak_rss_mb": 1345.97,
+      "per_file": [
+        {
+          "audio_file": "en_0000_0078.wav",
+          "audio_duration_s": 25.6,
+          "transcript": " It will have the access straight from there. So there will be no access hindering here. No. They will have a separate access. And the play area, there is only one play area? One play area for the kids. Ma'am, we have multiple areas. This is play area. This is open gym. You have a kids play area here. Your kids play area here. Once you go back, please see the miniature models. We have showcased. Also, you don't have any 3D video? I have.",
+          "decoded_tokens": 114,
+          "inference_time_s": 2.1877,
+          "real_time_factor": 11.702,
+          "tokens_per_second": 52.11,
+          "inference_peak_device_memory_mb": 2118.68,
+          "self_attn_kv_cache_allocated_bytes": 4377600,
+          "word_error_rate_vs_fp16_baseline": 0.0
+        },
+        {
+          "audio_file": "en_0001_0055.wav",
+          "audio_duration_s": 17.3,
+          "transcript": " I will have rice, I will come and I have one at one time. The rice only getting broken. Yeah, you could have taken in the morning time, morning or afternoon. No, afternoon, no preparation time, no time only, time, time will pitch up after whatever it is I will go.",
+          "decoded_tokens": 67,
+          "inference_time_s": 1.435,
+          "real_time_factor": 12.056,
+          "tokens_per_second": 46.69,
+          "inference_peak_device_memory_mb": 2118.68,
+          "self_attn_kv_cache_allocated_bytes": 2572800,
+          "word_error_rate_vs_fp16_baseline": 0.2245
+        }
+      ]
+    }
+  }
+}

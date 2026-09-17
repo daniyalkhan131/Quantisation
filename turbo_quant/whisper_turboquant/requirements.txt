@@ -5,13 +5,19 @@ numpy
 safetensors
 huggingface_hub
 
+# Used by run_one_config.py / evaluate.py to load and resample audio to
+# 16kHz mono without depending on ffmpeg being on PATH.
+soundfile
+scipy
+
 # Needed only to import mlx_vlm.turboquant / mlx_vlm.models.* for the
-# TurboQuant KV-cache script (turboquant_decoder.py). Install mlx-vlm itself
-# from the cloned repo: pip install -e /path/to/mlx-vlm
+# TurboQuant KV-cache scripts (turboquant_decoder.py, run_one_config.py).
+# Install mlx-vlm itself from the cloned repo:
+#   git clone git@github.com:Blaizzy/mlx-vlm.git
+#   pip install -e ./mlx-vlm
 # (its own requirements.txt pulls in transformers, Pillow, etc.)
 
-# Optional, only needed if you feed arbitrary audio files (mp3/flac/etc.)
-# without ffmpeg on PATH -- otherwise mlx_whisper.audio.load_audio shells
-# out to ffmpeg directly.
-# soundfile
-# scipy
+# Optional: only needed if you use mlx_whisper.transcribe directly on
+# arbitrary audio formats (mp3/flac/etc.) instead of via run_one_config.py's
+# soundfile-based loader.
+# brew install ffmpeg

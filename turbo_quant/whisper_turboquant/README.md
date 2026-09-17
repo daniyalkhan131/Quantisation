@@ -133,12 +133,85 @@ It's a minimal decode loop for measurement, not a drop-in replacement for
 `mlx_whisper.transcribe` (no beam search, temperature fallback, or chunking
 across audio > 30s).
 
-## Verified results (this session)
+## Part C -- evaluating all four configs on whisper-large-v3
 
-Run against `openai/whisper-tiny` (fast to download; same code path as
-`whisper-large-v3`, just smaller) transcribing the classic JFK
-"ask not what your country can do for you" test clip
-([source](https://github.com/openai/whisper/raw/main/tests/jfk.flac)):
+`evaluate.py` runs the full 2x2 matrix -- weights (fp16 vs 4-bit) x KV cache
+(none vs TurboQuant) -- against every `.wav` in a data directory, and writes
+one JSON report with timing, memory, and quality numbers. Each config runs
+in its own subprocess (`run_one_config.py`) so peak-memory numbers reflect
+one model in isolation, not a running max across four models loaded
+back-to-back. All four configs go through the *same* minimal decode loop
+from `turboquant_decoder.py` (not `mlx_whisper.transcribe`'s production
+pipeline), so weight precision and KV scheme are the only two things
+changing between runs -- see [Part B](#part-b----turboquant-on-whispers-decoder-kv-cache-experimental)
+for why `mlx_whisper.transcribe` isn't used here.
+
+```sh
+python convert_from_hf.py --hf-repo openai/whisper-large-v3 \
+  --mlx-path ./mlx-models/whisper-large-v3-fp16
+python convert_from_hf.py --hf-repo openai/whisper-large-v3 \
+  --mlx-path ./mlx-models/whisper-large-v3-4bit --quantize --q-bits 4 --q-group-size 64
+
+python evaluate.py \
+  --fp16-path ./mlx-models/whisper-large-v3-fp16 \
+  --int4-path ./mlx-models/whisper-large-v3-4bit \
+  --data-dir /Users/daniyal/Documents/projects/Quantisation/turbo_quant/data \
+  --kv-bits 3.5 \
+  --output report.json
+```
+
+Each per-file entry in `report.json` includes: inference time, real-time
+factor, tokens/sec, peak MLX device memory during inference, self-attention
+KV cache bytes allocated, the transcript, and (for every config except the
+baseline) word error rate against the fp16-baseline transcript for that same
+file -- there's no ground-truth transcript for this audio, so the baseline
+stands in as the reference for how much quantization moves the output, not
+absolute correctness. A `summary` block aggregates all of that per config,
+plus size/memory/KV-cache reduction percentages against the baseline.
+
+### Results (this session, real `openai/whisper-large-v3`, M-series Mac)
+
+2 files from `data/` (25.6s and 17.3s of real speech), full detail in
+[`report.json`](report.json):
+
+| Config | Weights | Load peak mem | Avg RTF | Avg tok/s | Avg inference peak mem | Avg KV cache allocated | Avg WER vs fp16 |
+|---|---|---|---|---|---|---|---|
+| fp16 baseline | 2940 MB | 2940 MB | 7.67x | 31.7 | 4202 MB | 40.0 MB | 0 (reference) |
+| 4-bit weights only | 837 MB (**-71.5%**) | 849 MB (**-71.1%**) | 13.66x | 56.1 | 2119 MB (**-49.6%**) | 40.0 MB (unchanged) | 0.112 |
+| TurboQuant 3.5-bit KV only | 2940 MB | 2940 MB | 7.46x | 30.7 | 4202 MB (~unchanged) | 3.3 MB (**-91.8%**) | 0.006 |
+| 4-bit weights + TurboQuant KV | 837 MB (**-71.5%**) | 849 MB (**-71.1%**) | 11.88x | 49.4 | 2119 MB (**-49.6%**) | 3.3 MB (**-91.7%**) | 0.112 |
+
+Takeaways from real numbers, not the earlier tiny-model estimate:
+
+- **Weight quantization is the lever that matters.** 4-bit weights alone cut
+  disk size and peak memory by ~70%, and roughly *doubled* throughput
+  (31.7 -> 56.1 tok/s) -- 4-bit matmuls on Apple Silicon are memory-bandwidth
+  bound, so a smaller checkpoint decodes faster too, not just smaller.
+  Quality cost: ~11% WER against the fp16 transcript, concentrated in the
+  harder of the two clips (one file was byte-identical to baseline; the
+  other picked up several word substitutions).
+- **TurboQuant KV cache barely moves speed or memory for Whisper**, exactly
+  as flagged in Part B: cache allocation is ~40MB either way at these
+  sequence lengths (well under whisper-large's 448-token cap), so it's noise
+  against a 2.9-3.7GB inference footprint dominated by weights and encoder
+  activations. Its ~92% *relative* KV reduction is real and reproducible,
+  it's just compressing a small number to begin with. Quality cost was
+  lower than weight quantization (~0.6% WER) and it didn't cost throughput.
+- **Combining both** gets you weight quantization's size/speed win with
+  TurboQuant's KV reduction stacked on top, at no additional quality cost
+  beyond what 4-bit weights alone already cost (WER identical to
+  weight-4bit-only on both files) -- the two are compressing independent
+  things (weights vs. activations), so their effects don't compound
+  negatively here.
+
+## Verified results, smaller model (`whisper-tiny`, earlier smoke test)
+
+Before running the full evaluation above on whisper-large-v3, the same code
+paths were validated on `openai/whisper-tiny` (fast to download) transcribing
+the classic JFK "ask not what your country can do for you" test clip
+([source](https://github.com/openai/whisper/raw/main/tests/jfk.flac)), to
+catch integration bugs cheaply before spending a 3GB download and a long-form
+model's compute on them:
 
 **Part A** -- `convert_from_hf.py`, then `mlx_whisper.transcribe`:
 
@@ -165,28 +238,36 @@ you, ask what you can do for your country").
 
 ## Caveats (honest numbers)
 
-- **The KV-cache reduction percentage above is not representative of real
-  savings.** mlx-vlm's cache classes allocate in fixed 256-token steps
-  regardless of scheme, so both the baseline and TurboQuant numbers above
-  reflect one over-provisioned 256-token buffer, not the ~27 tokens actually
-  used. The *relative* reduction (bits-per-element) is real and matches
-  TurboQuant's design; the absolute KB figures are not "memory saved on this
-  transcription," they're "memory saved per allocated 256-token buffer."
-- **Absolute savings are tiny in absolute terms regardless.** A whisper-large
-  decoder layer's KV cache at its 448-token max is a few hundred KB in fp16;
-  TurboQuant shaves that down further, but it's noise next to the ~3 GB of
-  fp16 weights (or ~0.8 GB at 4-bit) that dominate Whisper-large's memory
-  footprint. Part A (weight quantization) is what actually matters for
-  Whisper; Part B exists because it was asked for, not because it's the
-  right lever here.
-- **This isn't upstream-mlx-vlm-quality code.** `turboquant_decoder.py` is a
-  minimal decode loop (greedy only, one 30s chunk, no beam search / VAD /
-  timestamp features) built to prove the integration and measure it
-  honestly -- use `mlx_whisper.transcribe` (Part A) for anything you'd
-  actually rely on.
+- **The KV-cache byte counts are allocated capacity, not tokens actually
+  used.** mlx-vlm's cache classes allocate in fixed 256-token steps
+  regardless of scheme; the large-v3 baseline's 40MB is exactly
+  `32 layers x 2 (k+v) x 20 heads x 256-token step x 64 head_dim x 2 bytes`,
+  not the ~25-40 tokens each clip actually decoded to. The *relative*
+  reduction (~92%, matching TurboQuant's bits-per-dimension design) is real
+  and reproducible; the absolute MB figures are "memory per allocated
+  256-token buffer," not "memory saved on this specific transcription."
+  Real long-form use (dictation, meeting transcripts spanning many 30s
+  chunks with a carried-over cache) would show TurboQuant mattering more
+  than it does here.
+- **`evaluate.py`/`turboquant_decoder.py` are not `mlx_whisper.transcribe`.**
+  They share one minimal greedy decode loop (built for a controlled A/B/C/D
+  comparison) with no beam search, temperature fallback, VAD, or chunking
+  past 30s -- use `mlx_whisper.transcribe` (Part A) for anything you'd
+  actually rely on for transcription quality. The reported tok/s and RTF
+  numbers are specific to this minimal loop and will differ from
+  `mlx_whisper.transcribe`'s (the Part A sanity check above ran noticeably
+  faster wall-clock for the same files, since it has less per-step Python
+  overhead and no memory reset between calls).
+- **WER here is "distance from the fp16 transcript," not accuracy.** There's
+  no ground-truth transcript for `data/`'s audio, so it measures how much a
+  quantized config's output diverges from the unquantized run on the same
+  audio -- a proxy for quality drift, not a claim about correctness.
 
 ## Files
 
 - `convert_from_hf.py` -- HF Whisper checkpoint -> MLX checkpoint, optional weight quantization.
 - `turboquant_decoder.py` -- TurboQuant-enabled Whisper decoder + a minimal transcribe loop for measurement.
+- `run_one_config.py` -- runs one (weights x KV-scheme) config over a data dir; invoked as a subprocess by `evaluate.py`.
+- `evaluate.py` -- orchestrates the full 2x2 matrix and writes `report.json`.
+- `report.json` -- full per-file results from the run described above.
 - `requirements.txt`

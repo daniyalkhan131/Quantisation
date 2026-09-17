@@ -146,7 +146,21 @@ def main():
     args = parser.parse_args()
 
     print(f"Downloading {args.hf_repo} from Hugging Face...")
-    model_path = Path(snapshot_download(args.hf_repo, allow_patterns=["*.json", "*.safetensors"]))
+    # Some repos (e.g. openai/whisper-large-v3) also publish separate fp32
+    # shards named "model.fp32-000NN-of-000MM.safetensors" alongside the
+    # normal fp16 "model.safetensors" / "model-000NN-of-000MM.safetensors".
+    # A bare "*.safetensors" pattern would pull both (~15GB extra), so match
+    # only the standard naming.
+    model_path = Path(
+        snapshot_download(
+            args.hf_repo,
+            allow_patterns=[
+                "*.json",
+                "model.safetensors",
+                "model-*-of-*.safetensors",
+            ],
+        )
+    )
 
     config = json.loads((model_path / "config.json").read_text())
     dims = dims_from_hf_config(config)
