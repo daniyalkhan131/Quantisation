@@ -1,0 +1,17 @@
+# Core
+mlx>=0.32.2
+mlx-whisper>=0.5.0
+numpy
+safetensors
+huggingface_hub
+
+# Needed only to import mlx_vlm.turboquant / mlx_vlm.models.* for the
+# TurboQuant KV-cache script (turboquant_decoder.py). Install mlx-vlm itself
+# from the cloned repo: pip install -e /path/to/mlx-vlm
+# (its own requirements.txt pulls in transformers, Pillow, etc.)
+
+# Optional, only needed if you feed arbitrary audio files (mp3/flac/etc.)
+# without ffmpeg on PATH -- otherwise mlx_whisper.audio.load_audio shells
+# out to ffmpeg directly.
+# soundfile
+# scipy
