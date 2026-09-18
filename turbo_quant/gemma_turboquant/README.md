@@ -214,6 +214,111 @@ necessary or sufficient without running calibration.
   differs -- not "generated wrong words." Read the actual text (in
   `report.json` or the tables above) rather than the WER percentage alone.
 
+## Part 2 -- the same model on mlx-vlm: how much faster, how much less memory
+
+Everything above uses PyTorch + transformers on MPS. This section runs the
+exact same model (`google/gemma-4-E4B-it`) and the exact same two prompts
+through **mlx-vlm** instead -- both its plain weights (fp16, 4-bit) and its
+own *real*, Metal-kernel-backed TurboQuant (`mlx_vlm.turboquant`, a
+completely different, production implementation from `vivekvar/turboquant`
+above) -- to answer "how much does the MLX backend actually buy you."
+
+```sh
+python -m mlx_vlm convert --hf-path google/gemma-4-E4B-it \
+  --mlx-path ./mlx-models/gemma-4-E4B-it-fp16 --dtype float16
+python -m mlx_vlm convert --hf-path google/gemma-4-E4B-it \
+  --mlx-path ./mlx-models/gemma-4-E4B-it-4bit -q --q-bits 4 --q-group-size 64
+
+python evaluate_mlx_backend.py --kv-bits 3.5 --max-tokens 300 \
+  --pytorch-report report.json --output mlx_report.json
+```
+
+One gotcha that mattered: mlx-vlm defaults `quantized_kv_start=5000` --
+TurboQuant only compresses cache entries *past* the 5000th cached token, so
+with either of our prompts (70 and 4627 total tokens) it silently never
+activates unless you explicitly override it to something like `0`. The
+first run of this comparison hit exactly that: TurboQuant's output came
+back byte-identical to baseline, which looked like a great result but
+actually meant "we tested baseline against baseline." `run_one_mlx_config.py`
+passes `--quantized-kv-start 0` for the TurboQuant configs to actually
+exercise it.
+
+### Results (this session, same hardware, same two prompts)
+
+**Model load:**
+
+| | PyTorch/MPS | mlx-vlm | mlx-vlm speedup |
+|---|---|---|---|
+| Load time | 22.1s | 6.4s | **3.4x** |
+| Peak device memory | 15154 MB | 15146 MB | ~same (same fp16 weights) |
+
+**Generation throughput, same fp16 weights, no KV quantization** -- this
+isolates the backend/kernel difference alone, nothing to do with
+quantization:
+
+| Prompt | PyTorch/MPS tok/s | mlx-vlm tok/s | Speedup |
+|---|---|---|---|
+| short | 5.78 | 12.99 | **2.25x** |
+| long_context | 6.38 | 12.06 | **1.89x** |
+
+**Adding mlx-vlm's own 4-bit weight quantization on top** -- now both
+backend and weight-quantization gains combine:
+
+| Prompt | PyTorch/MPS fp16 tok/s | mlx-vlm 4-bit tok/s | Combined speedup |
+|---|---|---|---|
+| short | 5.78 | 42.85 | **7.4x** |
+| long_context | 6.38 | 39.60 | **6.2x** |
+
+**TurboQuant implementation, apples to apples** (both actually compressing
+the KV cache, `nbits=4`/`kv-bits 3.5`): mlx-vlm's fused-kernel version vs
+`vivekvar/turboquant`'s pure-PyTorch reference version from Part 1 --
+
+| Prompt | vivekvar/turboquant tok/s (PyTorch/MPS) | mlx-vlm TurboQuant tok/s | Speedup |
+|---|---|---|---|
+| short (~370 total tokens) | 10.55 | 13.10 | 1.24x |
+| long_context (~4630 total tokens) | 3.47 | 11.81 | **3.4x** |
+
+**This speedup gap widening with context length is the single most telling
+number in this whole comparison.** It's direct empirical confirmation of
+`notes.txt`'s explanation: the reference implementation re-dequantizes its
+*entire* compressed history on every decode step (no incremental caching),
+so its cost grows with sequence length; mlx-vlm's fused Metal kernels
+compute attention scores directly from the packed representation and don't
+pay that cost at all. At a short context the two are close (1.24x); at
+~4600 tokens the naive implementation has fallen to a third of mlx-vlm's
+speed. Stack 4-bit weights on top of mlx-vlm's TurboQuant and the gap
+against the naive PyTorch reference implementation reaches **11x** on the
+long prompt.
+
+**Memory:** peak device memory tracks weights almost entirely at this
+model size (15.1 GB fp16 -> 4.9 GB at 4-bit, a **67.6% reduction** either
+with or without TurboQuant) -- KV cache is such a small fraction of total
+footprint here (as in Part 1 and in `../whisper_turboquant/`) that
+TurboQuant's compression doesn't move the peak-memory needle either way.
+Load-time peak memory is identical between TurboQuant and non-TurboQuant at
+the same weight precision, for the same reason.
+
+**Quality:** with TurboQuant genuinely active (post-fix), mlx-vlm's output
+diverges from its own fp16 baseline about as much as `vivekvar/turboquant`
+did from its baseline (both land in the 0.6-0.8 WER-vs-self-baseline range
+once quantization is actually exercised) -- same "small perturbation flips
+an early greedy-decoding choice, then the rest of the completion follows a
+different but not obviously worse path" story as everywhere else in this
+project. Full per-prompt text is in `mlx_report.json`.
+
+### Bottom line
+
+For this specific model on this specific Mac: mlx-vlm's backend alone is
+worth ~2x over PyTorch/MPS at the same precision; mlx-vlm's 4-bit weight
+quantization is worth another ~3x on top of that (~6-7x combined); and
+mlx-vlm's *implementation quality* of TurboQuant (not the algorithm --
+the same algorithm, just with fused kernels) is worth up to ~11x over a
+naive-but-correct reference implementation at realistic context lengths.
+The single biggest lesson from this whole `gemma_turboquant/` folder: for
+KV-cache quantization schemes specifically, the reference implementation's
+engineering quality (does it avoid full re-dequantization every step?)
+matters as much as which paper it implements.
+
 ## Files
 
 - `turboquant_src/` -- the actual library (cloned from
@@ -224,5 +329,18 @@ necessary or sufficient without running calibration.
   subprocess by `evaluate_gemma4.py`.
 - `evaluate_gemma4.py` -- orchestrates both configs and writes `report.json`
   with the full per-prompt comparison.
-- `report.json` -- full results from the run described above.
+- `report.json` -- full results from the PyTorch/transformers run (Part 1).
+- `run_one_mlx_config.py` -- loads `google/gemma-4-E4B-it` via mlx-vlm,
+  optionally with `kv_bits`/`kv_quant_scheme`/`quantized_kv_start` set for
+  mlx-vlm's real TurboQuant, runs both prompts, writes one config's metrics
+  to JSON. Invoked as a subprocess by `evaluate_mlx_backend.py`.
+- `evaluate_mlx_backend.py` -- orchestrates the mlx-vlm 2x2 matrix and
+  cross-compares against `report.json`'s PyTorch numbers, writing
+  `mlx_report.json`.
+- `mlx_report.json` -- full results from the mlx-vlm run (Part 2), including
+  the `cross_backend_vs_pytorch` section.
+- `mlx-models/` -- converted MLX checkpoints (fp16, 4-bit); gitignored, not
+  committed (regenerate with the `mlx_vlm convert` commands above).
+- `notes.txt` -- plain-language notes on why the reference TurboQuant
+  implementation slows down on long contexts.
 - `requirements.txt`
